@@ -48,22 +48,21 @@ public class ClaimLevels extends JavaPlugin {
         loadLang();
         dm.setupData(this);
         convertToUUID();
-        try {
-            Metrics metrics = new Metrics(this);
-            metrics.start();
-        } catch (IOException e) {
-        }
     }
 
     public void convertToUUID() {
-        for(String name : dm.getData().getConfigurationSection("").getKeys(false)) {
-            String UUID = getUUIDFromName(name);
-            if(UUID != null) {
-                int credits = dm.getData().getInt(name + ".credits");
-                dm.getData().set(UUID + ".credits", credits);
-                dm.getData().set(name, null);
-                dm.saveData();
-                Bukkit.getLogger().info("[ClaimLevels] Converted the player data to UUID");
+        if(getConfig().getBoolean("Converted") == false) {
+            for(String name : dm.getData().getConfigurationSection("").getKeys(false)) {
+                String UUID = getUUIDFromName(name);
+                if(UUID != null) {
+                    int credits = dm.getData().getInt(name + ".credits");
+                    dm.getData().set(UUID + ".credits", credits);
+                    dm.getData().set(name, null);
+                    dm.saveData();
+                    getConfig().set("Converted", true);
+                    saveConfig();
+                    Bukkit.getLogger().info("[ClaimLevels] Converted the player data to UUID");
+                }
             }
         }
     }
